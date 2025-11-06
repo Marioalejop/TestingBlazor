@@ -11,5 +11,3 @@ build_property.RootNamespace = MiApp.Blazor.TestUnit
 build_property.ProjectDir = C:\Users\ASUS\Desktop\Ingenieria Software\TestingBlazor\MiApp.Blazor.TestUnit\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
-build_property.EffectiveAnalysisLevelStyle = 8.0
-build_property.EnableCodeStyleSeverity = 

@@ -25,28 +25,22 @@ pipeline {
             steps {
                 echo 'Ejecutando pruebas unitarias...'
                 bat "mkdir %TEST_RESULTS%"
-                bat "dotnet test --no-build --configuration %CONFIGURATION% --logger \"trx;LogFileName=tests.trx\" --results-directory %TEST_RESULTS%"
+                bat "dotnet test --no-build --configuration %CONFIGURATION% --logger \"junit;LogFileName=tests.xml\" --results-directory %TEST_RESULTS%"
             }
             post {
                 always {
                     echo 'Publicando resultados de pruebas...'
-                    junit allowEmptyResults: true, testResults: '**/TestResults/*.trx'
-                }
-                failure {
-                    echo 'Las pruebas fallaron.'
-                }
-                success {
-                    echo 'Todas las pruebas pasaron correctamente.'
+                    junit allowEmptyResults: false, testResults: '**/TestResults/*.xml'
                 }
             }
         }
 
         stage('Publish Artifacts') {
             when {
-                branch 'main'
+                anyOf { branch 'main'; branch 'develop' }
             }
             steps {
-                echo 'Publicando artefactos...'
+                echo "Publicando artefactos de ${env.BRANCH_NAME}..."
                 bat "dotnet publish --configuration %CONFIGURATION% -o output"
                 archiveArtifacts artifacts: 'output/**/*.*', fingerprint: true
             }
@@ -54,8 +48,14 @@ pipeline {
     }
 
     post {
+        success {
+            echo '✅ Pipeline completado exitosamente.'
+        }
+        failure {
+            echo '❌ Pipeline fallido.'
+        }
         always {
-            echo 'Pipeline finalizado.'
+            echo '🏁 Pipeline finalizado.'
         }
     }
 }
