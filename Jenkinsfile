@@ -1,18 +1,12 @@
 pipeline {
     agent any
 
-    tools {
-        // Asegura que Jenkins tenga .NET SDK instalado con este nombre en Global Tool Configuration
-        dotnet 'dotnet6'
-    }
-
     environment {
         CONFIGURATION = 'Release'
         TEST_RESULTS = 'TestResults'
     }
 
     stages {
-
         stage('Restore') {
             steps {
                 echo 'Restaurando dependencias...'
@@ -30,16 +24,12 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Ejecutando pruebas unitarias...'
-                // Crea carpeta de resultados
                 bat "mkdir %TEST_RESULTS%"
-                
-                // Ejecuta pruebas y genera reporte TRX y cobertura
                 bat "dotnet test --no-build --configuration %CONFIGURATION% --logger \"trx;LogFileName=tests.trx\" --results-directory %TEST_RESULTS%"
             }
             post {
                 always {
                     echo 'Publicando resultados de pruebas...'
-                    // Publica resultados en Jenkins si tienes el plugin JUnit o MSTest
                     junit allowEmptyResults: true, testResults: '**/TestResults/*.trx'
                 }
                 failure {
@@ -51,12 +41,12 @@ pipeline {
             }
         }
 
-        stage('Publish') {
+        stage('Publish Artifacts') {
             when {
                 branch 'main'
             }
             steps {
-                echo 'Publicando artefactos'
+                echo 'Publicando artefactos...'
                 bat "dotnet publish --configuration %CONFIGURATION% -o output"
                 archiveArtifacts artifacts: 'output/**/*.*', fingerprint: true
             }
@@ -66,9 +56,6 @@ pipeline {
     post {
         always {
             echo 'Pipeline finalizado.'
-        }
-        failure {
-            echo 'El pipeline fallo. Revisa los logs para mas detalles.'
         }
     }
 }
