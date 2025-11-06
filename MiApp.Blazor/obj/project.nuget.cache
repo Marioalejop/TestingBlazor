@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "K14c/Ah1H/E=",
+  "dgSpecHash": "SaODUZIsGtY=",
   "success": true,
-  "projectFilePath": "C:\\Users\\ASUS\\Desktop\\Ingenieria Software\\TestingDotnet\\MiApp.Blazor\\MiApp.Blazor.csproj",
+  "projectFilePath": "C:\\Users\\ASUS\\Desktop\\Ingenieria Software\\TestingBlazor\\MiApp.Blazor\\MiApp.Blazor.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ASUS\\.nuget\\packages\\microsoft.aspnetcore.authorization\\9.0.8\\microsoft.aspnetcore.authorization.9.0.8.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\microsoft.aspnetcore.components\\9.0.8\\microsoft.aspnetcore.components.9.0.8.nupkg.sha512",

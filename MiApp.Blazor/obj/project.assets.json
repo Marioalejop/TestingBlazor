@@ -1763,11 +1763,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ASUS\\Desktop\\Ingenieria Software\\TestingDotnet\\MiApp.Blazor\\MiApp.Blazor.csproj",
+      "projectUniqueName": "C:\\Users\\ASUS\\Desktop\\Ingenieria Software\\TestingBlazor\\MiApp.Blazor\\MiApp.Blazor.csproj",
       "projectName": "MiApp.Blazor",
-      "projectPath": "C:\\Users\\ASUS\\Desktop\\Ingenieria Software\\TestingDotnet\\MiApp.Blazor\\MiApp.Blazor.csproj",
+      "projectPath": "C:\\Users\\ASUS\\Desktop\\Ingenieria Software\\TestingBlazor\\MiApp.Blazor\\MiApp.Blazor.csproj",
       "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ASUS\\Desktop\\Ingenieria Software\\TestingDotnet\\MiApp.Blazor\\obj\\",
+      "outputPath": "C:\\Users\\ASUS\\Desktop\\Ingenieria Software\\TestingBlazor\\MiApp.Blazor\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

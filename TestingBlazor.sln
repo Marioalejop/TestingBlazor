@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiApp.Blazor", "MiApp.Blazor\MiApp.Blazor.csproj", "{F1E912A5-A854-6354-FB12-A4E9BF031D99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiApp.Blazor.TestUnit", "MiApp.Blazor.TestUnit\MiApp.Blazor.TestUnit.csproj", "{C64B7F7D-D64D-8BC8-29AA-4CC1CD2F84AF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F1E912A5-A854-6354-FB12-A4E9BF031D99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1E912A5-A854-6354-FB12-A4E9BF031D99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1E912A5-A854-6354-FB12-A4E9BF031D99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1E912A5-A854-6354-FB12-A4E9BF031D99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C64B7F7D-D64D-8BC8-29AA-4CC1CD2F84AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C64B7F7D-D64D-8BC8-29AA-4CC1CD2F84AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C64B7F7D-D64D-8BC8-29AA-4CC1CD2F84AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C64B7F7D-D64D-8BC8-29AA-4CC1CD2F84AF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E4197E31-E954-436C-896B-401B3D2A8EC3}
+	EndGlobalSection
+EndGlobal
