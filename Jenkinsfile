@@ -1,13 +1,15 @@
 pipeline {
     agent any
 
-    environment {
-        DOTNET_SKIP_FIRST_TIME_EXPERIENCE = 'true'
-        DOTNET_CLI_TELEMETRY_OPTOUT = 'true'
-        PATH = "${PATH};C:\\Program Files\\dotnet\\"
-    }
-
     stages {
+
+        stage('Checkout') {
+            steps {
+                echo 'Clonando repositorio...'
+                git branch: 'main', url: 'https://github.com/Marioalejop/TestingBlazor'
+            }
+        }
+
         stage('Restore') {
             steps {
                 echo 'Restaurando dependencias...'
@@ -25,14 +27,14 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Ejecutando pruebas unitarias...'
-                bat 'mkdir TestResults || echo Carpeta existente'
-                // Ejecuta pruebas y genera archivo TRX legible por Jenkins
-                bat 'dotnet test --no-build --configuration Release --logger "trx;LogFileName=tests.trx" --results-directory TestResults'
+                bat '''
+                    mkdir TestResults || echo Carpeta existente
+                    dotnet test --configuration Release --no-restore --logger "trx;LogFileName=TestResults/tests.trx"
+                '''
             }
             post {
                 always {
                     echo 'Publicando resultados de pruebas...'
-                    // Publica los resultados .trx
                     mstest testResultsFile: 'TestResults/tests.trx'
                 }
             }
@@ -43,21 +45,19 @@ pipeline {
                 expression { currentBuild.currentResult == 'SUCCESS' }
             }
             steps {
-                echo 'Publicando artefactos compilados...'
-                archiveArtifacts artifacts: '**/bin/Release/**/*.dll', fingerprint: true
+                echo 'Publicando artefactos...'
+                bat 'dotnet publish MiApp.Blazor/MiApp.Blazor.csproj -c Release -o publish'
+                archiveArtifacts artifacts: 'publish/**', followSymlinks: false
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline completado exitosamente.'
+            echo '✅ Pipeline finalizado correctamente.'
         }
         failure {
-            echo 'Pipeline fallido.'
-        }
-        always {
-            echo 'Pipeline finalizado.'
+            echo '❌ Pipeline fallido.'
         }
     }
 }
