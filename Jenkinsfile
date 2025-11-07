@@ -1,12 +1,20 @@
 pipeline {
     agent any
 
-    environment {
-        CONFIGURATION = 'Release'
-        TEST_RESULTS = 'TestResults'
+    // Trigger automático para ejecutar el pipeline cuando haya un cambio en el repo
+    triggers {
+        pollSCM('H/1 * * * *') // revisa cambios cada minuto
     }
 
     stages {
+
+        stage('Checkout') {
+            steps {
+                echo 'Clonando repositorio...'
+                git branch: 'main', url: 'https://github.com/Marioalejop/TestingBlazor'
+            }
+        }
+
         stage('Restore') {
             steps {
                 echo 'Restaurando dependencias...'
@@ -17,45 +25,43 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Compilando proyecto...'
-                bat "dotnet build --configuration %CONFIGURATION% --no-restore"
+                bat 'dotnet build --configuration Release --no-restore'
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Ejecutando pruebas unitarias...'
-                bat "mkdir %TEST_RESULTS%"
-                bat "dotnet test --no-build --configuration %CONFIGURATION% --logger \"junit;LogFileName=tests.xml\" --results-directory %TEST_RESULTS%"
+                bat '''
+                    dotnet test --configuration Release --no-restore --logger "trx;LogFileName=tests.trx" --results-directory "TestResults"
+                '''
             }
             post {
                 always {
                     echo 'Publicando resultados de pruebas...'
-                    junit allowEmptyResults: false, testResults: '**/TestResults/*.xml'
+                    mstest testResultsFile: 'TestResults/tests.trx'
                 }
             }
         }
 
         stage('Publish Artifacts') {
             when {
-                anyOf { branch 'main'; branch 'develop' }
+                expression { currentBuild.currentResult == 'SUCCESS' }
             }
             steps {
-                echo "Publicando artefactos de ${env.BRANCH_NAME}..."
-                bat "dotnet publish --configuration %CONFIGURATION% -o output"
-                archiveArtifacts artifacts: 'output/**/*.*', fingerprint: true
+                echo 'Publicando artefactos...'
+                bat 'dotnet publish MiApp.Blazor/MiApp.Blazor.csproj -c Release -o publish'
+                archiveArtifacts artifacts: 'publish/**', followSymlinks: false
             }
         }
     }
 
     post {
         success {
-            echo '✅ Pipeline completado exitosamente.'
+            echo '✅ Pipeline finalizado correctamente.'
         }
         failure {
             echo '❌ Pipeline fallido.'
-        }
-        always {
-            echo '🏁 Pipeline finalizado.'
         }
     }
 }
