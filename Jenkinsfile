@@ -1,8 +1,9 @@
 pipeline {
     agent any
 
+    // Trigger automático para ejecutar el pipeline cuando haya un cambio en el repo
     triggers {
-        pollSCM('H/1 * * * *') 
+        pollSCM('H/1 * * * *') // revisa cambios cada minuto
     }
 
     stages {
@@ -64,4 +65,3 @@ pipeline {
         }
     }
 }
-
