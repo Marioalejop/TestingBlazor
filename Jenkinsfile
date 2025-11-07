@@ -2,8 +2,9 @@ pipeline {
     agent any
 
     environment {
-        CONFIGURATION = 'Release'
-        TEST_RESULTS = 'TestResults'
+        DOTNET_SKIP_FIRST_TIME_EXPERIENCE = 'true'
+        DOTNET_CLI_TELEMETRY_OPTOUT = 'true'
+        PATH = "${PATH};C:\\Program Files\\dotnet\\"
     }
 
     stages {
@@ -17,45 +18,46 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Compilando proyecto...'
-                bat "dotnet build --configuration %CONFIGURATION% --no-restore"
+                bat 'dotnet build --configuration Release --no-restore'
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Ejecutando pruebas unitarias...'
-                bat "mkdir %TEST_RESULTS%"
-                bat "dotnet test --no-build --configuration %CONFIGURATION% --logger \"junit;LogFileName=tests.xml\" --results-directory %TEST_RESULTS%"
+                bat 'mkdir TestResults || echo Carpeta existente'
+                // Ejecuta pruebas y genera archivo TRX legible por Jenkins
+                bat 'dotnet test --no-build --configuration Release --logger "trx;LogFileName=tests.trx" --results-directory TestResults'
             }
             post {
                 always {
                     echo 'Publicando resultados de pruebas...'
-                    junit allowEmptyResults: false, testResults: '**/TestResults/*.xml'
+                    // Publica los resultados .trx
+                    mstest testResultsFile: 'TestResults/tests.trx'
                 }
             }
         }
 
         stage('Publish Artifacts') {
             when {
-                anyOf { branch 'main'; branch 'develop' }
+                expression { currentBuild.currentResult == 'SUCCESS' }
             }
             steps {
-                echo "Publicando artefactos de ${env.BRANCH_NAME}..."
-                bat "dotnet publish --configuration %CONFIGURATION% -o output"
-                archiveArtifacts artifacts: 'output/**/*.*', fingerprint: true
+                echo 'Publicando artefactos compilados...'
+                archiveArtifacts artifacts: '**/bin/Release/**/*.dll', fingerprint: true
             }
         }
     }
 
     post {
         success {
-            echo '✅ Pipeline completado exitosamente.'
+            echo 'Pipeline completado exitosamente.'
         }
         failure {
-            echo '❌ Pipeline fallido.'
+            echo 'Pipeline fallido.'
         }
         always {
-            echo '🏁 Pipeline finalizado.'
+            echo 'Pipeline finalizado.'
         }
     }
 }
