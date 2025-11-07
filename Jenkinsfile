@@ -29,7 +29,7 @@ pipeline {
                 echo 'Ejecutando pruebas unitarias...'
                 bat '''
                     mkdir TestResults || echo Carpeta existente
-                    dotnet test --configuration Release --no-restore --logger "trx;LogFileName=TestResults/tests.trx"
+                    dotnet test --configuration Release --no-restore --logger "trx;LogFileName=../TestResults/tests.trx"
                 '''
             }
             post {
