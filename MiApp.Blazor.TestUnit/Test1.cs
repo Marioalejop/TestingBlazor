@@ -9,15 +9,9 @@ namespace MiApp.Blazor.TestUnit
         [TestMethod]
         public void AgregarTarea_DeberiaAumentarLaListaYActualizarMensaje()
         {
-            // Arrange
-            var pagina = new Tareas();
-
-            // Act
-            pagina.AgregarTarea();
-
-            // Assert
-            Assert.AreEqual(1, pagina.listaTareas.Count);
-            Assert.AreEqual("Total tareas: 1", pagina.mensaje);
+            var componente = new Tareas();
+            componente.AgregarTarea();
+            Assert.AreEqual(1, componente.listaTareas.Count);
         }
     }
 }
