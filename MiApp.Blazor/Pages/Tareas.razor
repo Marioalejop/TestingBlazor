@@ -1,20 +1,71 @@
 @page "/tareas"
+@inject MiApp.Blazor.Services.TaskService taskService
 
-<h3>Tareas</h3>
+<h3 class="mb-3">Gestor de Tareas</h3>
 
-<p>@mensaje</p>
+<div class="card p-3 shadow-sm">
+    <div class="mb-3 d-flex">
+        <input @bind="nuevaTarea" placeholder="Escribe una nueva tarea" class="form-control me-2" />
+        <button class="btn btn-primary" @onclick="AgregarTarea">Agregar</button>
+        <button class="btn btn-outline-danger ms-2" @onclick="BorrarTodo">Borrar todo</button>
+    </div>
 
-<button @onclick="AgregarTarea">Agregar tarea</button>
+    <p>@mensaje</p>
+
+    <ul class="list-group">
+        @foreach (var tarea in listaTareas)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>@tarea</span>
+                <button class="btn btn-sm btn-danger" @onclick="() => EliminarTarea(tarea)">Eliminar</button>
+            </li>
+        }
+    </ul>
+</div>
 
 @code {
-    // Variables públicas para que el test pueda acceder
     public string mensaje = "Sin tareas";
     public List<string> listaTareas = new();
+    public string nuevaTarea = string.Empty;
 
-    // Método público que modifica el estado
-    public void AgregarTarea()
+    protected override async Task OnInitializedAsync()
     {
-        listaTareas.Add("Nueva tarea");
-        mensaje = $"Total tareas: {listaTareas.Count}";
+        listaTareas = await taskService.GetTareasAsync();
+        ActualizarMensaje();
+    }
+
+    public async Task AgregarTarea()
+    {
+        if (string.IsNullOrWhiteSpace(nuevaTarea))
+        {
+            mensaje = "Por favor ingresa una tarea.";
+            return;
+        }
+
+        listaTareas.Add(nuevaTarea);
+        nuevaTarea = string.Empty;
+        await taskService.SaveTareasAsync(listaTareas);
+        ActualizarMensaje();
+    }
+
+    public async Task EliminarTarea(string tarea)
+    {
+        listaTareas.Remove(tarea);
+        await taskService.SaveTareasAsync(listaTareas);
+        ActualizarMensaje();
+    }
+
+    public async Task BorrarTodo()
+    {
+        listaTareas.Clear();
+        await taskService.ClearTareasAsync();
+        ActualizarMensaje();
+    }
+
+    private void ActualizarMensaje()
+    {
+        mensaje = listaTareas.Count == 0
+            ? "Sin tareas"
+            : $"Total tareas: {listaTareas.Count}";
     }
 }
