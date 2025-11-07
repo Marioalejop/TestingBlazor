@@ -2,8 +2,7 @@ pipeline {
     agent any
 
     triggers {
-        // 🔁 Ejecuta automáticamente el pipeline cuando hay un push al repositorio GitHub
-        githubPush()
+        pollSCM('H/1 * * * *') 
     }
 
     stages {
