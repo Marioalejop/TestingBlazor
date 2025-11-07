@@ -1,13 +1,7 @@
 pipeline {
     agent any
 
-    // Trigger automático para ejecutar el pipeline cuando haya un cambio en el repo
-    triggers {
-        pollSCM('H/1 * * * *') // revisa cambios cada minuto
-    }
-
     stages {
-
         stage('Checkout') {
             steps {
                 echo 'Clonando repositorio...'
@@ -32,36 +26,28 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Ejecutando pruebas unitarias...'
-                bat '''
-                    dotnet test --configuration Release --no-restore --logger "trx;LogFileName=tests.trx" --results-directory "TestResults"
-                '''
-            }
-            post {
-                always {
-                    echo 'Publicando resultados de pruebas...'
-                    mstest testResultsFile: 'TestResults/tests.trx'
-                }
+                bat 'dotnet test --configuration Release --no-restore --logger "trx;LogFileName=tests.trx" --results-directory "TestResults"'
             }
         }
 
-        stage('Publish Artifacts') {
-            when {
-                expression { currentBuild.currentResult == 'SUCCESS' }
-            }
+        stage('Publish Results') {
             steps {
-                echo 'Publicando artefactos...'
-                bat 'dotnet publish MiApp.Blazor/MiApp.Blazor.csproj -c Release -o publish'
-                archiveArtifacts artifacts: 'publish/**', followSymlinks: false
+                echo 'Publicando resultados de pruebas...'
+                mstest testResultsFile: '**/TestResults/*.trx', allowMissing: true, keepLongStdio: true, healthScaleFactor: 1.0
             }
         }
     }
 
     post {
         success {
-            echo '✅ Pipeline finalizado correctamente.'
+            echo '✅ Pipeline completado con éxito.'
         }
         failure {
             echo '❌ Pipeline fallido.'
+        }
+        always {
+            echo '🔁 Limpieza finalizada.'
+            cleanWs()
         }
     }
 }
